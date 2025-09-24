@@ -1,6 +1,6 @@
 <h1>ExpNo 4 : Implement A* search algorithm for a Graph</h1> 
-<h3>Name:       </h3>
-<h3>Register Number:           </h3>
+<h3>Name: JAGANNIVASH U M      </h3>
+<h3>Register Number:212224240059           </h3>
 <H3>Aim:</H3>
 <p>To ImplementA * Search algorithm for a Graph using Python 3.</p>
 <H3>Algorithm:</H3>
@@ -112,8 +112,79 @@ B 6 <br>
 C 99 <br>
 E 7 <br>
 D 1 <br>
-G 0 <br>
+G 0
+<br>
 <hr>
 <h2>Sample Output</h2>
 <hr>
 Path found: ['A', 'E', 'D', 'G']
+PROGRAM:
+```
+#!/usr/bin/env python
+# coding: utf-8
+
+from collections import defaultdict
+
+H_dist = {}
+
+def aStarAlgo(start_node, stop_node):
+    open_set = set([start_node])  # Use a set with start_node
+    closed_set = set()
+    g = {}  # store distance from starting node
+    parents = {}  # parents contains an adjacency map of all nodes
+
+    # Distance of starting node from itself is zero
+    g[start_node] = 0
+    # Start node is root node; it has no parent nodes
+    # So start_node is set to its own parent node
+    parents[start_node] = start_node
+
+    while len(open_set) > 0:
+        n = None
+        # Node with the lowest f() is found
+        for v in open_set:
+            if n is None or g[v] + heuristic(v) < g[n] + heuristic(n):
+                n = v
+
+        if n is None:  # If no node found, path does not exist
+            print('Path does not exist!')
+            return None
+        
+        if n == stop_node:
+            # If the current node is the stop_node,
+            # then we begin reconstructing the path from it to the start_node
+            path = []
+            while parents[n] != n:
+                path.append(n)
+                n = parents[n]
+            path.append(start_node)
+            path.reverse()
+            print('Path found: {}'.format(path))
+            return path
+
+        # Remove n from the open_list and add it to closed_list
+        # because all of its neighbors were inspected
+        open_set.remove(n)
+        closed_set.add(n)
+
+        for (m, weight) in get_neighbors(n):
+            # Nodes 'm' not in first and last set are added to first
+            # n is set its parent
+            if m not in open_set and m not in closed_set:
+                open_set.add(m)
+                parents[m] = n
+                g[m] = g[n] + weight
+            else:
+                if g[m] > g[n] + weight:
+                    # Update g(m)
+                    g[m] = g[n] + weight
+                    # Change parent of m to n
+                    parents[m] = n
+                    # If m in closed set, remove and add to open
+                    if m in closed_set:
+                        closed_set.remove(m)
+                        open_set.add(m)
+
+    print('Path does not exist!')
+    return None
+```
